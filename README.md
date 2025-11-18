@@ -9,11 +9,12 @@ A full-stack e-commerce application built with React, Node.js, Express, and Mong
 
 ### 🛒 Shopping Experience
 - **Product Browsing** - Browse products with filtering, sorting, and search
-- **Guest Checkout** - Shop without creating an account
+- **Guest Shopping** - Browse and add to cart without an account
 - **Shopping Cart** - Add, update, and remove items with real-time updates
-- **Wishlist** - Save favorite products for later
+- **Wishlist** - Save favorite products for later (requires login)
 - **Product Reviews** - Verified purchase reviews with ratings
 - **Order Tracking** - Track order status from placement to delivery
+- **Secure Checkout** - Login required to place orders
 
 ### 👤 User Features
 - **Authentication** - Secure login and registration
@@ -176,8 +177,15 @@ npm run make-admin your@email.com
 
 ## 🌟 Key Features Explained
 
-### Guest Checkout
-Users can shop without creating an account. Cart data is stored in localStorage for guests and synced to the database for authenticated users.
+### Email Notifications
+Automated email notifications keep customers informed:
+- **Order Confirmation** - Sent immediately after order placement with confirmation link
+- **Order Confirmed** - Sent after email confirmation
+- **Order Shipped** - Includes tracking number and tracking link
+- **Order Delivered** - Includes review prompts for purchased products
+
+### Guest Shopping
+Users can browse products and add items to cart without creating an account. Cart data is stored in localStorage for guests and synced to the database for authenticated users. However, users must login or register to complete checkout and place orders.
 
 ### Verified Reviews
 Only users who have purchased and received a product can write reviews, ensuring authentic feedback.
@@ -257,11 +265,3 @@ Project Link: [https://github.com/yourusername/shopverse](https://github.com/you
 - [TanStack Query](https://tanstack.com/query)
 - [Express](https://expressjs.com/)
 - [MongoDB](https://www.mongodb.com/)
-
-## 📧 Support
-
-For support, email support@shopverse.com or open an issue in the repository.
-
----
-
-Made with ❤️ by Your Name

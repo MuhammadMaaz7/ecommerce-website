@@ -121,15 +121,24 @@ const Profile = () => {
                 ) : (
                   orders.map((order: any) => {
                     const statusColors: any = {
-                      Pending: "bg-yellow-500/20 text-yellow-700",
-                      Processing: "bg-blue-500/20 text-blue-700",
-                      Shipped: "bg-purple-500/20 text-purple-700",
-                      Delivered: "bg-green-500/20 text-green-700",
-                      Cancelled: "bg-red-500/20 text-red-700",
+                      Pending: "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400",
+                      Confirmed: "bg-green-500/20 text-green-700 dark:text-green-400",
+                      Processing: "bg-blue-500/20 text-blue-700 dark:text-blue-400",
+                      Shipped: "bg-purple-500/20 text-purple-700 dark:text-purple-400",
+                      Delivered: "bg-green-500/20 text-green-700 dark:text-green-400",
+                      Cancelled: "bg-red-500/20 text-red-700 dark:text-red-400",
                     };
 
                     return (
                       <Card key={order._id} className="p-6 hover:shadow-lg transition-all border border-border">
+                        {order.status === "Pending" && !order.isConfirmed && (
+                          <div className="mb-4 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                            <p className="text-sm text-yellow-700 dark:text-yellow-400">
+                              ⏳ Awaiting confirmation - Check your email to confirm this order
+                            </p>
+                          </div>
+                        )}
+                        
                         <div className="flex justify-between items-start mb-4">
                           <div>
                             <h3 className="font-semibold text-lg">

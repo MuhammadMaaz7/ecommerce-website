@@ -58,10 +58,10 @@ const OrderSuccess = () => {
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             className="inline-block mb-6"
           >
-            <CheckCircle className="h-24 w-24 text-success mx-auto animate-bounce-subtle" />
+            <Mail className="h-24 w-24 text-primary mx-auto animate-bounce-subtle" />
           </motion.div>
-          <h1 className="text-4xl font-bold mb-2">Order Confirmed!</h1>
-          <p className="text-muted-foreground text-lg">Thank you for your purchase</p>
+          <h1 className="text-4xl font-bold mb-2">Order Placed!</h1>
+          <p className="text-muted-foreground text-lg">Please check your email to confirm your order</p>
         </motion.div>
 
         <motion.div
@@ -81,15 +81,31 @@ const OrderSuccess = () => {
               </div>
             </div>
 
+            <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-6 mb-6">
+              <div className="flex items-start gap-4">
+                <Mail className="h-8 w-8 text-blue-500 flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="font-semibold text-lg mb-2">📧 Confirmation Email Sent!</h3>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    We've sent a confirmation email to your registered email address. 
+                    <strong className="text-foreground"> Please click the confirmation link in the email to complete your order.</strong>
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    ⚠️ Your order will be automatically cancelled if not confirmed within 24 hours.
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <div className="grid md:grid-cols-2 gap-6">
               <div className="flex items-start gap-4">
                 <div className="bg-primary/10 p-3 rounded-lg">
-                  <Mail className="h-6 w-6 text-primary" />
+                  <CheckCircle className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold mb-1">Confirmation Email Sent</h3>
+                  <h3 className="font-semibold mb-1">Order Status</h3>
                   <p className="text-sm text-muted-foreground">
-                    We've sent a confirmation email to your registered email address
+                    {order.status === "Pending" ? "Awaiting Confirmation" : order.status}
                   </p>
                 </div>
               </div>

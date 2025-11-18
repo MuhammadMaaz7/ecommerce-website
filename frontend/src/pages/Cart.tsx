@@ -6,10 +6,45 @@ import { Input } from "@/components/ui/input";
 import { Trash2, Plus, Minus, Tag, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/hooks/useCart";
+import { useAuth } from "@/context/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import { AuthModal } from "@/components/AuthModal";
+import { useState, useEffect } from "react";
 
 const Cart = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const { cart, isLoading, updateCart, removeFromCart, cartTotal } = useCart();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [attemptingCheckout, setAttemptingCheckout] = useState(false);
+
+  // Auto-navigate to checkout after login
+  useEffect(() => {
+    if (user && attemptingCheckout) {
+      setAttemptingCheckout(false);
+      setIsAuthModalOpen(false);
+      navigate("/checkout");
+    }
+  }, [user, attemptingCheckout, navigate]);
+
+  const handleCheckout = () => {
+    if (!user) {
+      setAttemptingCheckout(true);
+      setIsAuthModalOpen(true);
+      toast({
+        title: "Login Required",
+        description: "Please login or create an account to proceed with checkout",
+      });
+      return;
+    }
+    navigate("/checkout");
+  };
+
+  const handleAuthModalClose = () => {
+    setIsAuthModalOpen(false);
+    setAttemptingCheckout(false);
+  };
 
   if (isLoading) {
     return (
@@ -45,13 +80,23 @@ const Cart = () => {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
-            {cartItems.length === 0 ? (
+            {cartItems.some((item: any) => !item.product) && (
+              <Card className="p-4 bg-yellow-500/10 border-yellow-500/20">
+                <p className="text-sm text-yellow-700 dark:text-yellow-400">
+                  ⚠️ Some items in your cart are no longer available and have been hidden.
+                </p>
+              </Card>
+            )}
+            
+            {cartItems.filter((item: any) => item.product).length === 0 ? (
               <Card className="p-12 text-center">
                 <p className="text-muted-foreground mb-4">Your cart is empty</p>
                 <Button onClick={() => navigate("/products")}>Continue Shopping</Button>
               </Card>
             ) : (
-              cartItems.map((item: any, index: number) => (
+              cartItems
+                .filter((item: any) => item.product) // Filter out items with null products
+                .map((item: any, index: number) => (
                 <motion.div
                   key={item.product._id}
                   initial={{ opacity: 0, x: -20 }}
@@ -152,7 +197,7 @@ const Cart = () => {
                 <Button 
                   size="lg" 
                   className="w-full bg-primary hover:bg-primary-light text-white transition-all duration-300 mb-3"
-                  onClick={() => navigate("/checkout")}
+                  onClick={handleCheckout}
                 >
                   Proceed to Checkout
                 </Button>
@@ -168,6 +213,11 @@ const Cart = () => {
           )}
         </div>
       </main>
+
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={handleAuthModalClose} 
+      />
     </div>
   );
 };

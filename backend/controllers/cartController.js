@@ -15,6 +15,15 @@ export const getCart = async (req, res) => {
       cart = await Cart.create({ user: req.user._id, items: [] });
     }
 
+    // Clean up items with deleted products
+    const originalLength = cart.items.length;
+    cart.items = cart.items.filter(item => item.product !== null);
+    
+    // Save if items were removed
+    if (cart.items.length !== originalLength) {
+      await cart.save();
+    }
+
     res.json(cart);
   } catch (error) {
     res.status(500).json({ message: error.message });

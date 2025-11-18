@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { cartAPI } from "@/services/api";
 import { useToast } from "./use-toast";
 import { useAuth } from "@/context/AuthContext";
+import { useEffect } from "react";
 
 // Guest cart helpers
 const GUEST_CART_KEY = "guestCart";
@@ -36,6 +37,18 @@ export const useCart = () => {
     enabled: !user,
     staleTime: Infinity, // Never auto-refetch
   });
+
+  // Listen for cart merge event
+  useEffect(() => {
+    const handleCartMerged = () => {
+      // Invalidate cart queries when merge happens
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      queryClient.invalidateQueries({ queryKey: ["guestCart"] });
+    };
+
+    window.addEventListener("cartMerged", handleCartMerged);
+    return () => window.removeEventListener("cartMerged", handleCartMerged);
+  }, [queryClient]);
 
   // Use server cart for logged in users, guest cart for others
   const cart = user ? serverCart : guestCart;

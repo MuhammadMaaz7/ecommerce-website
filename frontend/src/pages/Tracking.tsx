@@ -2,12 +2,13 @@ import { motion } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Package, Truck, CheckCircle, Clock, Loader2 } from "lucide-react";
+import { Package, Truck, CheckCircle, Loader2, Mail } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useOrder } from "@/hooks/useOrders";
 
 const statusSteps = [
-  { status: "Pending", icon: Clock, label: "Order Placed" },
+  { status: "Pending", icon: Mail, label: "Awaiting Confirmation" },
+  { status: "Confirmed", icon: CheckCircle, label: "Confirmed" },
   { status: "Processing", icon: Package, label: "Processing" },
   { status: "Shipped", icon: Truck, label: "Shipped" },
   { status: "Delivered", icon: CheckCircle, label: "Delivered" },
@@ -75,11 +76,35 @@ const Tracking = () => {
           </p>
         </motion.div>
 
+        {/* Pending Order Warning */}
+        {order.status === "Pending" && !order.isConfirmed && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <Card className="p-6 mb-6 bg-yellow-500/10 border-yellow-500/20">
+              <div className="flex items-start gap-4">
+                <Mail className="h-6 w-6 text-yellow-600 flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="font-semibold text-lg mb-2">⏳ Confirmation Required</h3>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Your order is awaiting confirmation. Please check your email and click the confirmation link to complete your order.
+                  </p>
+                  <p className="text-xs text-yellow-700 dark:text-yellow-400">
+                    ⚠️ This order will be automatically cancelled if not confirmed within 24 hours.
+                  </p>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+        )}
+
         {/* Order Status Timeline */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
+          transition={{ delay: 0.2 }}
         >
           <Card className="p-8 mb-6 border border-border">
             <h2 className="text-2xl font-bold mb-8">Order Status</h2>
@@ -96,7 +121,7 @@ const Tracking = () => {
               </div>
 
               {/* Status Steps */}
-              <div className="relative grid grid-cols-4 gap-4">
+              <div className="relative grid grid-cols-5 gap-2">
                 {statusSteps.map((step, index) => {
                   const Icon = step.icon;
                   const isCompleted = index <= currentStatusIndex;

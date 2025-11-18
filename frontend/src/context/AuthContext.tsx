@@ -55,9 +55,49 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         role: data.role,
       };
       setUser(userData);
+      
+      // Merge guest cart with user cart
+      await mergeGuestCart();
+      
       return userData;
     } catch (error: any) {
       throw new Error(error.message || "Login failed");
+    }
+  };
+
+  const mergeGuestCart = async () => {
+    try {
+      // Only merge cart from THIS browser's localStorage
+      const guestCartData = localStorage.getItem("guestCart");
+      if (guestCartData) {
+        const guestCart = JSON.parse(guestCartData);
+        if (guestCart.items && guestCart.items.length > 0) {
+          // Import cartAPI dynamically to avoid circular dependency
+          const { cartAPI } = await import("@/services/api");
+          
+          const itemCount = guestCart.items.length;
+          console.log(`🛒 Merging ${itemCount} item(s) from THIS device's guest cart...`);
+          
+          // Add each guest cart item to user cart
+          for (const item of guestCart.items) {
+            try {
+              await cartAPI.add(item.product._id, item.quantity);
+            } catch (error) {
+              console.error("Failed to merge cart item:", error);
+            }
+          }
+          
+          // Clear guest cart after merging (only from THIS device)
+          localStorage.removeItem("guestCart");
+          
+          // Dispatch custom event to trigger cart refresh
+          window.dispatchEvent(new Event("cartMerged"));
+          
+          console.log(`✅ Cart merged successfully from this device!`);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to merge guest cart:", error);
     }
   };
 
@@ -73,6 +113,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         role: data.role,
       };
       setUser(userData);
+      
+      // Merge guest cart with user cart
+      await mergeGuestCart();
+      
       return userData;
     } catch (error: any) {
       throw new Error(error.message || "Registration failed");

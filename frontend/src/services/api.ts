@@ -171,6 +171,13 @@ export const ordersAPI = {
     });
     return handleResponse(response);
   },
+
+  confirmOrder: async (token: string) => {
+    const response = await fetch(`${API_URL}/orders/confirm/${token}`, {
+      method: "POST",
+    });
+    return handleResponse(response);
+  },
 };
 
 // Admin API

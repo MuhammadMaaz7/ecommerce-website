@@ -120,7 +120,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = "login" }: AuthModalP
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-card rounded-lg shadow-xl z-50 p-6"
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md max-h-[90vh] overflow-y-auto bg-card rounded-lg shadow-xl z-50 p-6"
           >
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold">

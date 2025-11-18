@@ -6,12 +6,14 @@ import {
   updateOrderToPaid,
   updateOrderStatus,
   getAllOrders,
+  confirmOrder,
 } from "../controllers/orderController.js";
 import { protect, admin } from "../middleware/auth.js";
 
 const router = express.Router();
 
 router.post("/", protect, createOrder);
+router.post("/confirm/:token", confirmOrder); // Public route for email confirmation
 router.get("/myorders", protect, getMyOrders);
 router.get("/:id", protect, getOrderById);
 router.put("/:id/pay", protect, updateOrderToPaid);

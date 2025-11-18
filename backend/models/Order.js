@@ -76,11 +76,21 @@ const orderSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"],
+      enum: ["Pending", "Confirmed", "Processing", "Shipped", "Delivered", "Cancelled"],
       default: "Pending",
     },
     trackingNumber: {
       type: String,
+    },
+    confirmationToken: {
+      type: String,
+    },
+    isConfirmed: {
+      type: Boolean,
+      default: false,
+    },
+    confirmedAt: {
+      type: Date,
     },
   },
   {

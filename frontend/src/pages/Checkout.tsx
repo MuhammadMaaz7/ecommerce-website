@@ -29,7 +29,46 @@ const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState("Card");
   const [saveAddress, setSaveAddress] = useState(false);
   const [savePayment, setSavePayment] = useState(false);
-  const [guestEmail, setGuestEmail] = useState("");
+
+  // Redirect to home if not logged in
+  if (!user) {
+    return (
+      <div className="min-h-screen gradient-soft">
+        <Navbar />
+        <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <Card className="p-12 text-center border border-border">
+            <Lock className="h-16 w-16 mx-auto mb-4 text-primary" />
+            <h2 className="text-2xl font-bold mb-4">Login Required</h2>
+            <p className="text-muted-foreground mb-6">
+              Please login or create an account to proceed with checkout
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button 
+                size="lg"
+                className="bg-primary hover:bg-primary-light text-white"
+                onClick={() => {
+                  toast({
+                    title: "Please login",
+                    description: "Click the user icon in the navigation bar to login or register",
+                  });
+                  navigate("/");
+                }}
+              >
+                Go to Home & Login
+              </Button>
+              <Button 
+                size="lg"
+                variant="outline"
+                onClick={() => navigate("/cart")}
+              >
+                Back to Cart
+              </Button>
+            </div>
+          </Card>
+        </main>
+      </div>
+    );
+  }
 
   if (cartLoading) {
     return (
@@ -70,16 +109,6 @@ const Checkout = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate guest email if not logged in
-    if (!user && !guestEmail) {
-      toast({
-        variant: "destructive",
-        title: "Missing Information",
-        description: "Please provide your email address",
-      });
-      return;
-    }
-
     // Validate shipping info
     if (!shippingInfo.address || !shippingInfo.city || !shippingInfo.postalCode) {
       toast({
@@ -105,31 +134,18 @@ const Checkout = () => {
       taxPrice,
       shippingPrice,
       totalPrice,
-      guestEmail: user ? undefined : guestEmail,
-      saveAddress: user ? saveAddress : undefined,
-      savePayment: user ? savePayment : undefined,
+      saveAddress,
+      savePayment,
     };
 
-    if (user) {
-      createOrder(orderData, {
-        onSuccess: (data) => {
-          setTimeout(() => {
-            clearCart();
-            navigate(`/order-success?orderId=${data._id}`);
-          }, 1000);
-        },
-      });
-    } else {
-      // Guest checkout - simulate order creation
-      toast({
-        title: "Order Placed!",
-        description: "Your order has been placed successfully.",
-      });
-      setTimeout(() => {
-        clearCart();
-        navigate(`/order-success?guest=true`);
-      }, 1000);
-    }
+    createOrder(orderData, {
+      onSuccess: (data) => {
+        setTimeout(() => {
+          clearCart();
+          navigate(`/order-success?orderId=${data._id}`);
+        }, 1000);
+      },
+    });
   };
 
   return (
@@ -155,26 +171,8 @@ const Checkout = () => {
                 transition={{ delay: 0.1 }}
               >
                 <Card className="p-6 border border-border">
-                  <h2 className="text-xl font-bold mb-4">
-                    {user ? "Shipping Information" : "Contact & Shipping Information"}
-                  </h2>
+                  <h2 className="text-xl font-bold mb-4">Shipping Information</h2>
                   <div className="space-y-4">
-                    {!user && (
-                      <div>
-                        <Label htmlFor="guestEmail">Email Address</Label>
-                        <Input 
-                          id="guestEmail" 
-                          type="email"
-                          required 
-                          value={guestEmail}
-                          onChange={(e) => setGuestEmail(e.target.value)}
-                          placeholder="your@email.com"
-                        />
-                        <p className="text-xs text-muted-foreground mt-1">
-                          We'll send order confirmation to this email
-                        </p>
-                      </div>
-                    )}
                     <div>
                       <Label htmlFor="address">Street Address</Label>
                       <Input 

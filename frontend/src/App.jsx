@@ -9,6 +9,7 @@ import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
+import ConfirmOrder from "./pages/ConfirmOrder";
 import Tracking from "./pages/Tracking";
 import Profile from "./pages/Profile";
 import Contact from "./pages/Contact";
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-success" element={<OrderSuccess />} />
+          <Route path="/confirm-order/:token" element={<ConfirmOrder />} />
           <Route path="/tracking/:id" element={<Tracking />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/contact" element={<Contact />} />

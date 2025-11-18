@@ -172,7 +172,8 @@ const Orders = () => {
                   className="w-full p-2 border rounded-md"
                   required
                 >
-                  <option value="Pending">Pending</option>
+                  <option value="Pending">Pending (Awaiting Confirmation)</option>
+                  <option value="Confirmed">Confirmed</option>
                   <option value="Processing">Processing</option>
                   <option value="Shipped">Shipped</option>
                   <option value="Delivered">Delivered</option>

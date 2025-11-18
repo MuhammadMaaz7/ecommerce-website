@@ -1,6 +1,10 @@
 import Product from "../models/Product.js";
 import Order from "../models/Order.js";
 import User from "../models/User.js";
+import { 
+  sendOrderShippedNotification,
+  sendOrderDeliveredNotification 
+} from "../services/emailService.js";
 
 // @desc    Create a product (Admin)
 // @route   POST /api/admin/products
@@ -94,12 +98,13 @@ export const updateOrderStatus = async (req, res) => {
   try {
     const { status, trackingNumber } = req.body;
 
-    const order = await Order.findById(req.params.id);
+    const order = await Order.findById(req.params.id).populate("user", "email");
 
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
 
+    const previousStatus = order.status;
     order.status = status;
 
     if (trackingNumber) {
@@ -116,6 +121,19 @@ export const updateOrderStatus = async (req, res) => {
     }
 
     const updatedOrder = await order.save();
+
+    // Send email notifications based on status change
+    try {
+      if (status === "Shipped" && previousStatus !== "Shipped") {
+        await sendOrderShippedNotification(updatedOrder, order.user.email);
+      } else if (status === "Delivered" && previousStatus !== "Delivered") {
+        await sendOrderDeliveredNotification(updatedOrder, order.user.email);
+      }
+    } catch (emailError) {
+      console.error("Failed to send status update email:", emailError);
+      // Don't fail the status update if email fails
+    }
+
     res.json(updatedOrder);
   } catch (error) {
     res.status(500).json({ message: error.message });
