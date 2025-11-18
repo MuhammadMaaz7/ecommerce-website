@@ -1,0 +1,11 @@
+Number of views of products save for Most Viewed products/ Same for Most Purchased
+Add to Favourite functionality
+Order Tracking functionality using order number or tracking number
+Email Confirmation for order Confirmation
+Email sent everytime when status is updated
+How many Sold 1k sold, on product card
+Review onlly after order delivered to you 
+Products Filter price filters, etc
+discount code/promo code make it functional
+Guest orders not working correctly
+users shouldnt be able to see quantity of stock 
